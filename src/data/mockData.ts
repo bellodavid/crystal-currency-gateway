@@ -1,5 +1,4 @@
-
-import { Pool, Merchant, LiquidityProvider } from '@/types/liquidity';
+import { Pool, Merchant, LiquidityProvider, Transaction } from '@/types/liquidity';
 
 export const mockPools: Pool[] = [
   {
@@ -138,6 +137,69 @@ export const mockLiquidityProviders: LiquidityProvider[] = [
     totalEarnings: 5234.8,
     sharePercentage: 47.0,
     joinDate: new Date('2023-12-08'),
+  },
+];
+
+export const mockTransactions: Transaction[] = [
+  {
+    id: 'tx-1',
+    type: 'sell',
+    amount: 200,
+    currency: 'USDT',
+    exchangeRate: 1150,
+    fee: 4600,
+    merchantId: 'merchant-1',
+    status: 'completed',
+    timestamp: new Date('2024-06-15T10:30:00'),
+    userId: 'user-1',
+  },
+  {
+    id: 'tx-2',
+    type: 'buy',
+    amount: 500,
+    currency: 'USDT',
+    exchangeRate: 1150,
+    fee: 15812.5,
+    merchantId: 'merchant-2',
+    status: 'completed',
+    timestamp: new Date('2024-06-14T14:20:00'),
+    userId: 'user-1',
+  },
+  {
+    id: 'tx-3',
+    type: 'sell',
+    amount: 100,
+    currency: 'USDT',
+    exchangeRate: 1140,
+    fee: 2280,
+    merchantId: 'merchant-1',
+    status: 'pending',
+    timestamp: new Date('2024-06-13T09:15:00'),
+    userId: 'user-1',
+  },
+  {
+    id: 'tx-4',
+    type: 'buy',
+    amount: 750,
+    currency: 'USDT',
+    exchangeRate: 1160,
+    fee: 23200,
+    merchantId: 'merchant-3',
+    status: 'completed',
+    timestamp: new Date('2024-06-12T16:45:00'),
+    userId: 'user-1',
+  },
+  {
+    id: 'tx-5',
+    type: 'sell',
+    amount: 300,
+    currency: 'USDT',
+    exchangeRate: 1130,
+    fee: 6780,
+    merchantId: 'merchant-2',
+    status: 'failed',
+    timestamp: new Date('2024-06-11T11:30:00'),
+    userId: 'user-1',
   },
 ];
 
