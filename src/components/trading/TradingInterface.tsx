@@ -5,7 +5,9 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUpDown, Info, AlertTriangle } from 'lucide-react';
+import { useWallet } from '@/hooks/useWallet';
+import { useToast } from '@/hooks/use-toast';
+import { ArrowUpDown, Info, AlertTriangle, Wallet } from 'lucide-react';
 import { calculateDynamicFee, calculateTradeAmount, formatCurrency, formatNumber } from '@/utils/liquidityCalculations';
 import FeeBreakdown from './FeeBreakdown';
 
@@ -19,6 +21,10 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
   const [amount, setAmount] = useState('');
   const [feeCalculation, setFeeCalculation] = useState<DynamicFeeCalculation | null>(null);
   const [tradeCalculation, setTradeCalculation] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  const { isConnected, balance, connect } = useWallet();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (amount && parseFloat(amount) > 0) {
@@ -43,14 +49,84 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
     }
   }, [amount, activeTab, pool]);
 
-  const handleTrade = () => {
-    if (amount && parseFloat(amount) > 0) {
-      onTrade(parseFloat(amount), activeTab);
+  const handleTrade = async () => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet not connected",
+        description: "Please connect your wallet to continue",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!amount || parseFloat(amount) <= 0) {
+      toast({
+        title: "Invalid amount",
+        description: "Please enter a valid amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const tradeAmount = parseFloat(amount);
+
+    // Check if user has sufficient balance
+    if (activeTab === 'sell' && tradeAmount > balance.USDT) {
+      toast({
+        title: "Insufficient balance",
+        description: `You only have ${balance.USDT} USDT available`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Simulate transaction processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      onTrade(tradeAmount, activeTab);
+      
+      toast({
+        title: "Transaction initiated",
+        description: `Your ${activeTab} order for ${tradeAmount} USDT has been submitted`,
+      });
+      
       setAmount('');
+    } catch (error) {
+      toast({
+        title: "Transaction failed",
+        description: "Please try again later",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   const isHighFee = feeCalculation && feeCalculation.totalFee > 5;
+  const maxAmount = activeTab === 'sell' ? balance.USDT : 999999;
+
+  if (!isConnected) {
+    return (
+      <Card className="glass-card p-6">
+        <div className="text-center space-y-4">
+          <Wallet className="w-12 h-12 text-gray-400 mx-auto" />
+          <h3 className="text-xl font-semibold text-white">Connect Your Wallet</h3>
+          <p className="text-gray-400">
+            Connect your wallet to start trading {pool.baseCurrency} with our liquidity pool
+          </p>
+          <Button 
+            onClick={connect}
+            className="bg-gradient-to-r from-orange-500 to-purple-500 hover:from-orange-600 hover:to-purple-600 text-white"
+          >
+            Connect Wallet
+          </Button>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="glass-card p-6">
@@ -61,6 +137,12 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
             <span>Exchange Rate:</span>
             <span className="text-white font-medium">{formatNumber(pool.exchangeRate)}</span>
           </div>
+        </div>
+
+        {/* Wallet Balance Display */}
+        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+          <span className="text-sm text-gray-400">Your USDT Balance:</span>
+          <span className="text-white font-medium">{balance.USDT.toLocaleString()} USDT</span>
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'buy' | 'sell')}>
@@ -81,12 +163,21 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
 
           <TabsContent value="sell" className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Amount to Sell (USDT)</label>
+              <div className="flex justify-between">
+                <label className="text-sm text-gray-400">Amount to Sell (USDT)</label>
+                <button
+                  onClick={() => setAmount(balance.USDT.toString())}
+                  className="text-xs text-orange-400 hover:text-orange-300"
+                >
+                  Max: {balance.USDT.toLocaleString()}
+                </button>
+              </div>
               <Input
                 type="number"
                 placeholder="0.00"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+                max={maxAmount}
                 className="bg-white/5 border-white/10 text-white placeholder-gray-500"
               />
             </div>
@@ -153,20 +244,24 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
 
         <Button 
           onClick={handleTrade}
-          disabled={!amount || parseFloat(amount) <= 0}
+          disabled={!amount || parseFloat(amount) <= 0 || isProcessing || parseFloat(amount) > maxAmount}
           className={`w-full font-semibold ${
             activeTab === 'sell' 
               ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700' 
               : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-          } text-white`}
+          } text-white disabled:opacity-50`}
         >
-          {activeTab === 'sell' ? 'Sell USDT' : 'Buy USDT'}
+          {isProcessing ? (
+            'Processing...'
+          ) : (
+            `${activeTab === 'sell' ? 'Sell' : 'Buy'} USDT`
+          )}
         </Button>
 
         <div className="flex items-start space-x-2 text-xs text-gray-400">
           <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <p>
-            Trades are processed by verified liquidity merchants. 
+            Trades are processed by verified liquidity merchants on Hedera testnet. 
             Dynamic fees adjust based on market volatility and pool health to ensure sustainable liquidity.
           </p>
         </div>

@@ -32,6 +32,10 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* Brand colors */
+    --orange: 25 95% 60%; /* #F79237 */
+    --purple: 254 69% 63%; /* #564DCA */
   }
 
   * {
@@ -51,10 +55,10 @@
   }
 
   .crystal-glow {
-    box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 30px rgba(247, 146, 55, 0.3);
   }
 
   .gold-glow {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 30px rgba(86, 77, 202, 0.3);
   }
 }
