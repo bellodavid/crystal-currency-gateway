@@ -44,21 +44,58 @@
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
     min-height: 100vh;
+    color: #1e293b;
   }
 
   .glass-card {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.9);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
   }
 
   .crystal-glow {
-    box-shadow: 0 0 30px rgba(247, 146, 55, 0.3);
+    box-shadow: 0 0 30px rgba(247, 146, 55, 0.2);
   }
 
   .gold-glow {
-    box-shadow: 0 0 30px rgba(86, 77, 202, 0.3);
+    box-shadow: 0 0 30px rgba(86, 77, 202, 0.2);
+  }
+
+  /* Modern card styles */
+  .modern-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .modern-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+
+  /* Update text colors for light theme */
+  .text-foreground {
+    color: #1e293b !important;
+  }
+
+  .text-muted-foreground {
+    color: #64748b !important;
+  }
+
+  .text-gray-300 {
+    color: #64748b !important;
+  }
+
+  .text-gray-400 {
+    color: #94a3b8 !important;
+  }
+
+  .text-white {
+    color: #1e293b !important;
   }
 }
