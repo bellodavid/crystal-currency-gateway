@@ -39,12 +39,12 @@ const Portfolio = () => {
 
   if (!provider) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
         <Navbar />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">No Portfolio Found</h2>
-            <p className="text-gray-600 mb-6">Connect your wallet to view your liquidity provider portfolio.</p>
+            <h2 className="text-2xl font-bold text-white mb-4">No Portfolio Found</h2>
+            <p className="text-gray-300 mb-6">Connect your wallet to view your liquidity provider portfolio.</p>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white">
               Connect Wallet
             </Button>
@@ -81,7 +81,7 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -92,49 +92,49 @@ const Portfolio = () => {
               Liquidity Portfolio
             </span>
           </h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Track your liquidity contributions, earnings, and transaction history across all currency pools.
           </p>
         </div>
 
         {/* Portfolio Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="modern-card p-6">
+          <Card className="glass-card p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-orange-100 rounded-lg">
-                <DollarSign className="w-6 h-6 text-orange-500" />
+              <div className="p-3 bg-orange-500/20 rounded-lg">
+                <DollarSign className="w-6 h-6 text-orange-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wide">Total Invested</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-gray-300 uppercase tracking-wide">Total Invested</p>
+                <p className="text-2xl font-bold text-white">
                   {formatCurrency(provider.totalInvested, provider.currency)}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="modern-card p-6">
+          <Card className="glass-card p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <TrendingUp className="w-6 h-6 text-green-500" />
+              <div className="p-3 bg-green-500/20 rounded-lg">
+                <TrendingUp className="w-6 h-6 text-green-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wide">Total Earnings</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-gray-300 uppercase tracking-wide">Total Earnings</p>
+                <p className="text-2xl font-bold text-white">
                   {formatCurrency(provider.totalEarnings, provider.currency)}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="modern-card p-6">
+          <Card className="glass-card p-6">
             <div className="flex items-center space-x-4">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Calendar className="w-6 h-6 text-purple-500" />
+              <div className="p-3 bg-purple-500/20 rounded-lg">
+                <Calendar className="w-6 h-6 text-purple-400" />
               </div>
               <div>
-                <p className="text-sm text-gray-500 uppercase tracking-wide">Pool Share</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-sm text-gray-300 uppercase tracking-wide">Pool Share</p>
+                <p className="text-2xl font-bold text-white">
                   {provider.sharePercentage.toFixed(2)}%
                 </p>
               </div>
@@ -143,30 +143,30 @@ const Portfolio = () => {
         </div>
 
         {/* Recent Transactions */}
-        <Card className="modern-card p-6">
+        <Card className="glass-card p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-semibold text-gray-900">Recent Earnings</h2>
-            <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50">
+            <h2 className="text-xl font-semibold text-white">Recent Earnings</h2>
+            <Button variant="outline" className="border-white/20 text-gray-300 hover:bg-white/5">
               View All
             </Button>
           </div>
 
           <div className="space-y-4">
             {transactions.map((transaction) => (
-              <div key={transaction.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div key={transaction.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                 <div className="flex items-center space-x-4">
-                  <div className="p-2 bg-white rounded-lg shadow-sm">
+                  <div className="p-2 bg-white/10 rounded-lg shadow-sm">
                     {transaction.type === 'buy' ? (
-                      <ArrowUpRight className="w-4 h-4 text-green-500" />
+                      <ArrowUpRight className="w-4 h-4 text-green-400" />
                     ) : (
-                      <ArrowDownLeft className="w-4 h-4 text-red-500" />
+                      <ArrowDownLeft className="w-4 h-4 text-red-400" />
                     )}
                   </div>
                   <div>
-                    <p className="text-gray-900 font-medium">
+                    <p className="text-white font-medium">
                       {transaction.type === 'buy' ? 'Buy' : 'Sell'} {transaction.currency}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-300">
                       {transaction.timestamp.toLocaleDateString()}
                     </p>
                   </div>
@@ -174,10 +174,10 @@ const Portfolio = () => {
 
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <p className="text-gray-900 font-medium">
+                    <p className="text-white font-medium">
                       {formatCurrency(transaction.amount, transaction.currency)}
                     </p>
-                    <p className="text-sm text-green-500">
+                    <p className="text-sm text-green-400">
                       +{formatCurrency(transaction.fee * 0.4, transaction.currency)} earned
                     </p>
                   </div>
@@ -195,9 +195,9 @@ const Portfolio = () => {
 
         {/* Quick Actions */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card className="modern-card p-6 text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Add More Liquidity</h3>
-            <p className="text-gray-600 mb-6">
+          <Card className="glass-card p-6 text-center">
+            <h3 className="text-lg font-semibold text-white mb-4">Add More Liquidity</h3>
+            <p className="text-gray-300 mb-6">
               Increase your position in existing pools or join new currency pairs.
             </p>
             <Button className="bg-orange-500 hover:bg-orange-600 text-white w-full">
@@ -205,12 +205,12 @@ const Portfolio = () => {
             </Button>
           </Card>
 
-          <Card className="modern-card p-6 text-center">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Withdraw Earnings</h3>
-            <p className="text-gray-600 mb-6">
+          <Card className="glass-card p-6 text-center">
+            <h3 className="text-lg font-semibold text-white mb-4">Withdraw Earnings</h3>
+            <p className="text-gray-300 mb-6">
               Redeem your accumulated earnings from successful trades.
             </p>
-            <Button variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 w-full">
+            <Button variant="outline" className="border-white/20 text-gray-300 hover:bg-white/5 w-full">
               Withdraw
             </Button>
           </Card>

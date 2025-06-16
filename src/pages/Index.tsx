@@ -90,7 +90,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -101,7 +101,7 @@ const Index = () => {
               Currency Liquidity Pool
             </span>
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
             Trade seamlessly between local currencies and USDT with our automated market maker. 
             Powered by verified merchants across 150+ countries.
           </p>
@@ -109,14 +109,14 @@ const Index = () => {
           {/* Global Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             {globalStats.map((stat, index) => (
-              <Card key={index} className="modern-card p-4">
+              <Card key={index} className="glass-card p-4">
                 <div className="flex items-center justify-center space-x-2 mb-2">
                   <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                  <span className="text-sm text-gray-500">{stat.label}</span>
+                  <span className="text-sm text-gray-300">{stat.label}</span>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-sm text-green-500">{stat.change}</p>
+                  <p className="text-2xl font-bold text-white">{stat.value}</p>
+                  <p className="text-sm text-green-400">{stat.change}</p>
                 </div>
               </Card>
             ))}
@@ -136,44 +136,44 @@ const Index = () => {
             <PoolStats pool={selectedPool} />
             
             {/* Pool Composition */}
-            <Card className="modern-card p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Pool Composition</h3>
+            <Card className="glass-card p-6">
+              <h3 className="text-lg font-semibold text-white mb-4">Pool Composition</h3>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                       {selectedPool.baseCurrency.slice(0, 2)}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{selectedPool.baseCurrency}</p>
-                      <p className="text-sm text-gray-500">Base Currency</p>
+                      <p className="font-medium text-white">{selectedPool.baseCurrency}</p>
+                      <p className="text-sm text-gray-300">Base Currency</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-white">
                       {selectedPool.baseAmount.toLocaleString()} {selectedPool.baseCurrency}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-300">
                       {((selectedPool.baseAmount / selectedPool.exchangeRate) / selectedPool.totalLiquidity * 100).toFixed(1)}%
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                       UT
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">USDT</p>
-                      <p className="text-sm text-gray-500">Quote Currency</p>
+                      <p className="font-medium text-white">USDT</p>
+                      <p className="text-sm text-gray-300">Quote Currency</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-white">
                       {selectedPool.quoteAmount.toLocaleString()} USDT
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-300">
                       {(selectedPool.quoteAmount / selectedPool.totalLiquidity * 100).toFixed(1)}%
                     </p>
                   </div>
@@ -190,30 +190,30 @@ const Index = () => {
             />
             
             {/* Quick Info */}
-            <Card className="modern-card p-4">
-              <h4 className="font-medium text-gray-900 mb-3">How it works</h4>
-              <div className="space-y-2 text-sm text-gray-600">
+            <Card className="glass-card p-4">
+              <h4 className="font-medium text-white mb-3">How it works</h4>
+              <div className="space-y-2 text-sm text-gray-300">
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-500 text-xs font-bold">1</span>
+                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-orange-400 text-xs font-bold">1</span>
                   </div>
                   <p>Enter trade amount and review dynamic fees</p>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-500 text-xs font-bold">2</span>
+                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-orange-400 text-xs font-bold">2</span>
                   </div>
                   <p>Connect wallet and confirm transaction</p>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-500 text-xs font-bold">3</span>
+                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-orange-400 text-xs font-bold">3</span>
                   </div>
                   <p>Verified merchant processes your trade</p>
                 </div>
                 <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-500 text-xs font-bold">4</span>
+                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-orange-400 text-xs font-bold">4</span>
                   </div>
                   <p>Receive funds in your wallet or bank account</p>
                 </div>
