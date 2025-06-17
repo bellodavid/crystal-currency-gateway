@@ -56,16 +56,14 @@ const Contribute = () => {
     (parseFloat(contributeAmount) * selectedPool.apy / 100 / 365).toFixed(2) : '0';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
+    <div className="min-h-screen">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-crystal-400 via-gold-400 to-crystal-400 bg-clip-text text-transparent">
-              Contribute Liquidity
-            </span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Contribute Liquidity
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Provide liquidity to currency pools and earn fees from every trade. 
@@ -86,17 +84,17 @@ const Contribute = () => {
                     onClick={() => setSelectedPool(pool)}
                     className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
                       selectedPool.id === pool.id
-                        ? 'border-crystal-500 bg-crystal-500/10'
+                        ? 'border-orange-400 bg-orange-500/10'
                         : 'border-white/10 bg-white/5 hover:bg-white/10'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-4">
                         <div className="flex items-center space-x-1">
-                          <div className="w-8 h-8 bg-gradient-to-r from-crystal-400 to-crystal-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                             {pool.baseCurrency.slice(0, 2)}
                           </div>
-                          <div className="w-8 h-8 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          <div className="w-8 h-8 bg-gradient-to-r from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                             UT
                           </div>
                         </div>
@@ -168,8 +166,8 @@ const Contribute = () => {
               <h3 className="text-lg font-semibold text-white mb-4">How Liquidity Provision Works</h3>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-crystal-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-crystal-400 font-bold">1</span>
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-400 font-bold">1</span>
                   </div>
                   <div>
                     <h4 className="font-medium text-white">Provide Liquidity</h4>
@@ -180,8 +178,8 @@ const Contribute = () => {
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-crystal-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-crystal-400 font-bold">2</span>
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-400 font-bold">2</span>
                   </div>
                   <div>
                     <h4 className="font-medium text-white">Earn Trading Fees</h4>
@@ -192,8 +190,8 @@ const Contribute = () => {
                 </div>
                 
                 <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-crystal-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                    <span className="text-crystal-400 font-bold">3</span>
+                  <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span className="text-orange-400 font-bold">3</span>
                   </div>
                   <div>
                     <h4 className="font-medium text-white">Withdraw Anytime</h4>
@@ -213,10 +211,10 @@ const Contribute = () => {
               
               <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'usdt' | 'local')}>
                 <TabsList className="grid w-full grid-cols-2 bg-white/5">
-                  <TabsTrigger value="usdt" className="data-[state=active]:bg-gold-500/20 data-[state=active]:text-gold-400">
+                  <TabsTrigger value="usdt" className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-400">
                     USDT
                   </TabsTrigger>
-                  <TabsTrigger value="local" className="data-[state=active]:bg-crystal-500/20 data-[state=active]:text-crystal-400">
+                  <TabsTrigger value="local" className="data-[state=active]:bg-orange-500/20 data-[state=active]:text-orange-400">
                     {selectedPool.baseCurrency}
                   </TabsTrigger>
                 </TabsList>
@@ -268,7 +266,7 @@ const Contribute = () => {
                     
                     <div className="flex justify-between">
                       <span className="text-gray-400">Current APY:</span>
-                      <span className="text-gold-400 font-medium">{selectedPool.apy.toFixed(1)}%</span>
+                      <span className="text-purple-400 font-medium">{selectedPool.apy.toFixed(1)}%</span>
                     </div>
                   </div>
                 </div>
@@ -277,7 +275,7 @@ const Contribute = () => {
               <Button 
                 onClick={handleContribute}
                 disabled={!contributeAmount || parseFloat(contributeAmount) <= 0}
-                className="w-full bg-crystal-gradient hover:opacity-90 text-white font-semibold"
+                className="w-full bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-semibold"
               >
                 Add Liquidity
               </Button>
@@ -327,8 +325,8 @@ const Contribute = () => {
                 </div>
                 
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gold-500/10 rounded-lg">
-                    <Shield className="w-4 h-4 text-gold-400" />
+                  <div className="p-2 bg-orange-500/10 rounded-lg">
+                    <Shield className="w-4 h-4 text-orange-400" />
                   </div>
                   <div>
                     <p className="font-medium text-white">Verified Merchants</p>
