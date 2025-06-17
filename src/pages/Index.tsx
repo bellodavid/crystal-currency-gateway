@@ -64,42 +64,40 @@ const Index = () => {
       value: '$2.4M',
       change: '+12.5%',
       icon: DollarSign,
-      color: 'text-orange-500',
+      color: 'text-orange-400',
     },
     {
       label: 'Active Merchants',
       value: '247',
       change: '+8',
       icon: Users,
-      color: 'text-green-500',
+      color: 'text-green-400',
     },
     {
       label: '24h Volume',
       value: '$890K',
       change: '+24.8%',
       icon: Activity,
-      color: 'text-purple-500',
+      color: 'text-purple-400',
     },
     {
       label: 'Avg APY',
       value: '19.2%',
       change: '+1.4%',
       icon: Zap,
-      color: 'text-blue-500',
+      color: 'text-blue-400',
     },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-              Currency Liquidity Pool
-            </span>
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 text-white">
+            Currency Liquidity Pool
           </h1>
           <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
             Trade seamlessly between local currencies and USDT with our automated market maker. 

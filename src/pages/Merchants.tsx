@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Merchant } from '@/types/liquidity';
 import { mockMerchants, updateMerchantPerformance } from '@/data/mockData';
@@ -53,16 +52,14 @@ const Merchants = () => {
   const totalTransactions = merchants.reduce((acc, m) => acc + m.totalTransactions, 0);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900">
+    <div className="min-h-screen">
       <Navbar />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            <span className="bg-gradient-to-r from-orange-500 via-purple-500 to-orange-500 bg-clip-text text-transparent">
-              Liquidity Merchants
-            </span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Liquidity Merchants
           </h1>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Verified financial partners facilitating seamless fiat onramp and offramp services across the globe.
@@ -158,7 +155,7 @@ const Merchants = () => {
               </select>
             </div>
 
-            <Button className="bg-gradient-to-r from-orange-500 to-purple-500 hover:opacity-90 text-white">
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
               <Plus className="w-4 h-4 mr-2" />
               Become a Merchant
             </Button>
@@ -193,7 +190,7 @@ const Merchants = () => {
               crypto-to-fiat conversions in your region. Strict KYC requirements apply.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gradient-to-r from-orange-500 to-purple-500 hover:opacity-90 text-white">
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
                 Apply Now
               </Button>
               <Button variant="outline" className="border-white/20 text-gray-300 hover:bg-white/5">
