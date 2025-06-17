@@ -11,6 +11,7 @@ interface WalletHook {
   isConnected: boolean;
   address: string | null;
   balance: WalletBalance;
+  network: string;
   connect: () => Promise<void>;
   disconnect: () => void;
 }
@@ -18,6 +19,7 @@ interface WalletHook {
 export const useWallet = (): WalletHook => {
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
+  const [network] = useState('Hedera Testnet');
   const [balance, setBalance] = useState<WalletBalance>({
     USDT: 1500.50,
     NGN: 250000.00,
@@ -83,6 +85,7 @@ export const useWallet = (): WalletHook => {
     isConnected,
     address,
     balance,
+    network,
     connect,
     disconnect,
   };

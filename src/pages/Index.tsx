@@ -6,8 +6,8 @@ import Navbar from '@/components/navigation/Navbar';
 import PoolSelector from '@/components/pool/PoolSelector';
 import PoolStats from '@/components/pool/PoolStats';
 import TradingInterface from '@/components/trading/TradingInterface';
+import TransactionHistory from '@/components/trading/TransactionHistory';
 import { Card } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from '@/hooks/use-toast';
 import { Activity, DollarSign, Users, Zap } from 'lucide-react';
 
@@ -41,14 +41,12 @@ const Index = () => {
   }, []);
 
   const handleTrade = (amount: number, type: 'buy' | 'sell') => {
-    // Simulate trade processing
     toast({
       title: "Trade Initiated",
-      description: `${type === 'buy' ? 'Buying' : 'Selling'} ${amount} USDT. Connecting to merchant...`,
+      description: `${type === 'buy' ? 'Buying' : 'Selling'} ${amount} USDT. Matching with merchant...`,
       duration: 3000,
     });
 
-    // Simulate trade completion after 3 seconds
     setTimeout(() => {
       toast({
         title: "Trade Completed",
@@ -121,10 +119,10 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Main Trading Interface */}
-        <div className="grid lg:grid-cols-3 gap-8">
+        {/* Main Content */}
+        <div className="grid xl:grid-cols-4 gap-8">
           {/* Left Column - Pool Selection & Stats */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="xl:col-span-2 space-y-6">
             <PoolSelector 
               pools={pools}
               selectedPool={selectedPool}
@@ -180,43 +178,14 @@ const Index = () => {
             </Card>
           </div>
 
-          {/* Right Column - Trading Interface */}
-          <div className="space-y-6">
+          {/* Right Columns - Trading Interface & History */}
+          <div className="xl:col-span-2 space-y-6">
             <TradingInterface 
               pool={selectedPool}
               onTrade={handleTrade}
             />
             
-            {/* Quick Info */}
-            <Card className="glass-card p-4">
-              <h4 className="font-medium text-white mb-3">How it works</h4>
-              <div className="space-y-2 text-sm text-gray-300">
-                <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-400 text-xs font-bold">1</span>
-                  </div>
-                  <p>Enter trade amount and review dynamic fees</p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-400 text-xs font-bold">2</span>
-                  </div>
-                  <p>Connect wallet and confirm transaction</p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-400 text-xs font-bold">3</span>
-                  </div>
-                  <p>Verified merchant processes your trade</p>
-                </div>
-                <div className="flex items-start space-x-2">
-                  <div className="w-5 h-5 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <span className="text-orange-400 text-xs font-bold">4</span>
-                  </div>
-                  <p>Receive funds in your wallet or bank account</p>
-                </div>
-              </div>
-            </Card>
+            <TransactionHistory />
           </div>
         </div>
       </div>
