@@ -7,6 +7,8 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useWallet } from '@/hooks/useWallet';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Search, 
   Filter, 
@@ -15,7 +17,8 @@ import {
   TrendingUp,
   CheckCircle,
   AlertCircle,
-  Plus
+  Plus,
+  Wallet
 } from 'lucide-react';
 
 const Merchants = () => {
@@ -23,6 +26,8 @@ const Merchants = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
+  const { isConnected, connect } = useWallet();
+  const { toast } = useToast();
 
   // Update merchant performance periodically
   useEffect(() => {
@@ -50,6 +55,41 @@ const Merchants = () => {
   const onlineMerchants = merchants.filter(m => m.isOnline).length;
   const avgPerformance = merchants.reduce((acc, m) => acc + m.performanceScore, 0) / merchants.length;
   const totalTransactions = merchants.reduce((acc, m) => acc + m.totalTransactions, 0);
+
+  const handleBecomeMerchant = async () => {
+    if (!isConnected) {
+      toast({
+        title: "Wallet Connection Required",
+        description: "Please connect your wallet to become a merchant. We recommend using Hedera Testnet for testing.",
+        variant: "destructive"
+      });
+      try {
+        await connect();
+        toast({
+          title: "Wallet Connected!",
+          description: "Great! Now you can apply to become a merchant. Make sure you're on Hedera Testnet.",
+        });
+      } catch (error) {
+        console.error('Failed to connect wallet:', error);
+      }
+      return;
+    }
+
+    toast({
+      title: "Application Started",
+      description: "Redirecting to merchant application form. Ensure you have testnet funds for the application process.",
+    });
+    
+    // Here you would typically redirect to application form
+    console.log('Redirecting to merchant application...');
+  };
+
+  const handleLearnMore = () => {
+    toast({
+      title: "Merchant Program",
+      description: "Learn about our liquidity merchant program and requirements.",
+    });
+  };
 
   return (
     <div className="min-h-screen">
@@ -155,9 +195,13 @@ const Merchants = () => {
               </select>
             </div>
 
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Become a Merchant
+            <Button 
+              onClick={handleBecomeMerchant}
+              className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2"
+            >
+              {!isConnected && <Wallet className="w-4 h-4" />}
+              <Plus className="w-4 h-4" />
+              <span>{!isConnected ? 'Connect & Become a Merchant' : 'Become a Merchant'}</span>
             </Button>
           </div>
         </Card>
@@ -187,13 +231,29 @@ const Merchants = () => {
             </h2>
             <p className="text-gray-300 mb-6">
               Join our network of verified financial partners and earn fees by facilitating 
-              crypto-to-fiat conversions in your region. Strict KYC requirements apply.
+              crypto-to-fiat conversions in your region. Connect your wallet and use Hedera Testnet for testing.
             </p>
+            {!isConnected && (
+              <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 mb-6">
+                <div className="flex items-center justify-center space-x-2 text-orange-400">
+                  <Wallet className="w-5 h-5" />
+                  <span className="font-medium">Wallet connection required to proceed</span>
+                </div>
+              </div>
+            )}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white">
-                Apply Now
+              <Button 
+                onClick={handleBecomeMerchant}
+                className="bg-orange-500 hover:bg-orange-600 text-white flex items-center space-x-2"
+              >
+                {!isConnected && <Wallet className="w-4 h-4" />}
+                <span>{!isConnected ? 'Connect Wallet & Apply' : 'Apply Now'}</span>
               </Button>
-              <Button variant="outline" className="border-white/20 text-gray-300 hover:bg-white/5">
+              <Button 
+                variant="outline" 
+                onClick={handleLearnMore}
+                className="border-white/20 text-gray-300 hover:bg-white/5"
+              >
                 Learn More
               </Button>
             </div>
