@@ -1,104 +1,89 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
+import { toast } from '@/hooks/use-toast';
 
-export interface WalletState {
+interface WalletBalance {
+  USDT: number;
+  [currency: string]: number;
+}
+
+interface WalletHook {
   isConnected: boolean;
   address: string | null;
-  balance: {
-    USDT: number;
-    HBAR: number;
-  };
-  network: 'testnet' | 'mainnet';
-}
-
-export interface WalletActions {
+  balance: WalletBalance;
   connect: () => Promise<void>;
   disconnect: () => void;
-  switchToTestnet: () => Promise<void>;
 }
 
-export const useWallet = (): WalletState & WalletActions => {
-  const [wallet, setWallet] = useState<WalletState>({
-    isConnected: false,
-    address: null,
-    balance: {
-      USDT: 0,
-      HBAR: 0,
-    },
-    network: 'testnet',
+export const useWallet = (): WalletHook => {
+  const [isConnected, setIsConnected] = useState(false);
+  const [address, setAddress] = useState<string | null>(null);
+  const [balance, setBalance] = useState<WalletBalance>({
+    USDT: 1500.50,
+    NGN: 250000.00,
+    KES: 15000.00,
+    GHS: 8500.00,
+    ZAR: 12000.00,
+    USD: 1000.00,
   });
 
-  // Simulate wallet connection for demo purposes
-  const connect = async () => {
+  const connect = useCallback(async () => {
     try {
-      // Simulate connection delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Simulate wallet connection
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Generate a mock testnet address
-      const mockAddress = `0x${Math.random().toString(16).substr(2, 40)}`;
+      const mockAddress = '0x0b62e7acbfa9' + Math.random().toString(16).substring(2, 8);
+      setAddress(mockAddress);
+      setIsConnected(true);
       
-      // Mock testnet balances
-      setWallet({
-        isConnected: true,
-        address: mockAddress,
-        balance: {
-          USDT: 10000, // 10,000 USDT for testing
-          HBAR: 500,   // 500 HBAR for testing
-        },
-        network: 'testnet',
+      // Simulate fetching updated balances including native tokens
+      setBalance({
+        USDT: 1500.50 + Math.random() * 1000,
+        NGN: 250000.00 + Math.random() * 100000,
+        KES: 15000.00 + Math.random() * 5000,
+        GHS: 8500.00 + Math.random() * 3000,
+        ZAR: 12000.00 + Math.random() * 4000,
+        USD: 1000.00 + Math.random() * 500,
       });
-
-      console.log('Connected to testnet wallet:', mockAddress);
+      
+      toast({
+        title: "Wallet Connected",
+        description: `Connected to testnet wallet: ${mockAddress}`,
+      });
+      
+      console.log(`Connected to testnet wallet: ${mockAddress}`);
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      toast({
+        title: "Connection Failed",
+        description: "Please try again",
+        variant: "destructive",
+      });
     }
-  };
+  }, []);
 
-  const disconnect = () => {
-    setWallet({
-      isConnected: false,
-      address: null,
-      balance: {
-        USDT: 0,
-        HBAR: 0,
-      },
-      network: 'testnet',
+  const disconnect = useCallback(() => {
+    setIsConnected(false);
+    setAddress(null);
+    setBalance({
+      USDT: 0,
+      NGN: 0,
+      KES: 0,
+      GHS: 0,
+      ZAR: 0,
+      USD: 0,
     });
-    console.log('Wallet disconnected');
-  };
-
-  const switchToTestnet = async () => {
-    if (wallet.isConnected) {
-      setWallet(prev => ({
-        ...prev,
-        network: 'testnet',
-      }));
-      console.log('Switched to testnet');
-    }
-  };
-
-  // Update balance periodically (simulate real-time updates)
-  useEffect(() => {
-    if (wallet.isConnected) {
-      const interval = setInterval(() => {
-        setWallet(prev => ({
-          ...prev,
-          balance: {
-            ...prev.balance,
-            // Add small random fluctuations for demo
-            HBAR: prev.balance.HBAR + (Math.random() - 0.5) * 10,
-          },
-        }));
-      }, 30000); // Update every 30 seconds
-
-      return () => clearInterval(interval);
-    }
-  }, [wallet.isConnected]);
+    
+    toast({
+      title: "Wallet Disconnected",
+      description: "You have been disconnected from your wallet",
+    });
+  }, []);
 
   return {
-    ...wallet,
+    isConnected,
+    address,
+    balance,
     connect,
     disconnect,
-    switchToTestnet,
   };
 };

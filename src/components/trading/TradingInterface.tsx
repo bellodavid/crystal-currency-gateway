@@ -4,10 +4,11 @@ import { Pool, DynamicFeeCalculation } from '@/types/liquidity';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useWallet } from '@/hooks/useWallet';
 import { useToast } from '@/hooks/use-toast';
-import { ArrowUpDown, Info, AlertTriangle, Wallet } from 'lucide-react';
+import { ArrowUpDown, Info, AlertTriangle, Wallet, ArrowLeftRight } from 'lucide-react';
 import { calculateDynamicFee, calculateTradeAmount, formatCurrency, formatNumber } from '@/utils/liquidityCalculations';
 import FeeBreakdown from './FeeBreakdown';
 
@@ -19,12 +20,21 @@ interface TradingInterfaceProps {
 const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
   const [activeTab, setActiveTab] = useState<'buy' | 'sell'>('sell');
   const [amount, setAmount] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState<'USDT' | 'native'>('USDT');
   const [feeCalculation, setFeeCalculation] = useState<DynamicFeeCalculation | null>(null);
   const [tradeCalculation, setTradeCalculation] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   
   const { isConnected, balance, connect } = useWallet();
   const { toast } = useToast();
+
+  // Native token symbol based on pool
+  const nativeTokenSymbol = pool.baseCurrency === 'NGN' ? 'NGNT' : 
+                           pool.baseCurrency === 'KES' ? 'KEST' :
+                           pool.baseCurrency === 'GHS' ? 'GHST' :
+                           pool.baseCurrency === 'ZAR' ? 'ZART' :
+                           pool.baseCurrency === 'USD' ? 'USDT' :
+                           `${pool.baseCurrency}T`;
 
   useEffect(() => {
     if (amount && parseFloat(amount) > 0) {
@@ -47,7 +57,7 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
       setFeeCalculation(null);
       setTradeCalculation(null);
     }
-  }, [amount, activeTab, pool]);
+  }, [amount, activeTab, pool, selectedCurrency]);
 
   const handleTrade = async () => {
     if (!isConnected) {
@@ -70,11 +80,12 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
 
     const tradeAmount = parseFloat(amount);
 
-    // Check if user has sufficient balance
-    if (activeTab === 'sell' && tradeAmount > balance.USDT) {
+    // Check if user has sufficient balance based on selected currency
+    const requiredBalance = selectedCurrency === 'USDT' ? balance.USDT : balance[pool.baseCurrency] || 0;
+    if (activeTab === 'sell' && tradeAmount > requiredBalance) {
       toast({
         title: "Insufficient balance",
-        description: `You only have ${balance.USDT} USDT available`,
+        description: `You only have ${requiredBalance} ${selectedCurrency === 'USDT' ? 'USDT' : nativeTokenSymbol} available`,
         variant: "destructive",
       });
       return;
@@ -88,9 +99,10 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
       
       onTrade(tradeAmount, activeTab);
       
+      const currencySymbol = selectedCurrency === 'USDT' ? 'USDT' : nativeTokenSymbol;
       toast({
         title: "Transaction initiated",
-        description: `Your ${activeTab} order for ${tradeAmount} USDT has been submitted`,
+        description: `Your ${activeTab} order for ${tradeAmount} ${currencySymbol} has been submitted`,
       });
       
       setAmount('');
@@ -106,7 +118,9 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
   };
 
   const isHighFee = feeCalculation && feeCalculation.totalFee > 5;
-  const maxAmount = activeTab === 'sell' ? balance.USDT : 999999;
+  const currentBalance = selectedCurrency === 'USDT' ? balance.USDT : (balance[pool.baseCurrency] || 0);
+  const maxAmount = activeTab === 'sell' ? currentBalance : 999999;
+  const displayCurrency = selectedCurrency === 'USDT' ? 'USDT' : nativeTokenSymbol;
 
   if (!isConnected) {
     return (
@@ -139,10 +153,42 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
           </div>
         </div>
 
+        {/* Currency Selection */}
+        <div className="space-y-3">
+          <label className="text-sm text-gray-400">Select Currency</label>
+          <Select value={selectedCurrency} onValueChange={(value) => setSelectedCurrency(value as 'USDT' | 'native')}>
+            <SelectTrigger className="bg-white/5 border-white/10 text-white">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-gray-900 border-white/10">
+              <SelectItem value="USDT" className="text-white hover:bg-white/10">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">$</div>
+                  <span>USDT (Tether)</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="native" className="text-white hover:bg-white/10">
+                <div className="flex items-center space-x-2">
+                  <div className="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center text-xs font-bold">
+                    {pool.baseCurrency.slice(0, 1)}
+                  </div>
+                  <span>{nativeTokenSymbol} ({pool.baseCurrency} Token)</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Wallet Balance Display */}
-        <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
-          <span className="text-sm text-gray-400">Your USDT Balance:</span>
-          <span className="text-white font-medium">{balance.USDT.toLocaleString()} USDT</span>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-white/5 rounded-lg">
+            <span className="text-xs text-gray-400">USDT Balance</span>
+            <div className="text-white font-medium">{balance.USDT.toLocaleString()}</div>
+          </div>
+          <div className="p-3 bg-white/5 rounded-lg">
+            <span className="text-xs text-gray-400">{nativeTokenSymbol} Balance</span>
+            <div className="text-white font-medium">{(balance[pool.baseCurrency] || 0).toLocaleString()}</div>
+          </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'buy' | 'sell')}>
@@ -151,25 +197,25 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
               value="sell" 
               className="data-[state=active]:bg-red-500/20 data-[state=active]:text-red-400"
             >
-              Sell USDT
+              Sell {displayCurrency}
             </TabsTrigger>
             <TabsTrigger 
               value="buy"
               className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
             >
-              Buy USDT
+              Buy {displayCurrency}
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="sell" className="space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between">
-                <label className="text-sm text-gray-400">Amount to Sell (USDT)</label>
+                <label className="text-sm text-gray-400">Amount to Sell ({displayCurrency})</label>
                 <button
-                  onClick={() => setAmount(balance.USDT.toString())}
+                  onClick={() => setAmount(currentBalance.toString())}
                   className="text-xs text-orange-400 hover:text-orange-300"
                 >
-                  Max: {balance.USDT.toLocaleString()}
+                  Max: {currentBalance.toLocaleString()}
                 </button>
               </div>
               <Input
@@ -185,7 +231,7 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
 
           <TabsContent value="buy" className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-gray-400">Amount to Buy (USDT)</label>
+              <label className="text-sm text-gray-400">Amount to Buy ({displayCurrency})</label>
               <Input
                 type="number"
                 placeholder="0.00"
@@ -196,6 +242,25 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Conversion Preview */}
+        {amount && parseFloat(amount) > 0 && (
+          <div className="p-4 bg-white/5 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="text-center">
+                <div className="text-sm text-gray-400">You {activeTab}</div>
+                <div className="text-white font-medium">{amount} {displayCurrency}</div>
+              </div>
+              <ArrowLeftRight className="w-4 h-4 text-gray-400" />
+              <div className="text-center">
+                <div className="text-sm text-gray-400">You get</div>
+                <div className="text-white font-medium">
+                  {tradeCalculation ? formatNumber(tradeCalculation.netAmount) : '0'} {selectedCurrency === 'USDT' ? nativeTokenSymbol : 'USDT'}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Trade Summary */}
         {tradeCalculation && feeCalculation && (
@@ -208,14 +273,6 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
               
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-gray-400">
-                    {activeTab === 'sell' ? 'You will receive' : 'You will pay'}:
-                  </span>
-                  <span className="text-white font-medium">
-                    {formatCurrency(tradeCalculation.netAmount, pool.baseCurrency)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
                   <span className="text-gray-400">Exchange Rate:</span>
                   <span className="text-white">{formatNumber(pool.exchangeRate)}</span>
                 </div>
@@ -224,6 +281,10 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
                   <span className={`font-medium ${isHighFee ? 'text-red-400' : 'text-gray-300'}`}>
                     {feeCalculation.totalFee.toFixed(2)}%
                   </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Network Fee:</span>
+                  <span className="text-gray-300">~0.001 HBAR</span>
                 </div>
               </div>
 
@@ -254,7 +315,7 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
           {isProcessing ? (
             'Processing...'
           ) : (
-            `${activeTab === 'sell' ? 'Sell' : 'Buy'} USDT`
+            `${activeTab === 'sell' ? 'Sell' : 'Buy'} ${displayCurrency}`
           )}
         </Button>
 
@@ -262,7 +323,8 @@ const TradingInterface = ({ pool, onTrade }: TradingInterfaceProps) => {
           <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
           <p>
             Trades are processed by verified liquidity merchants on Hedera testnet. 
-            Dynamic fees adjust based on market volatility and pool health to ensure sustainable liquidity.
+            You can trade between USDT and native tokens ({nativeTokenSymbol}) seamlessly.
+            Dynamic fees adjust based on market volatility and pool health.
           </p>
         </div>
       </div>
