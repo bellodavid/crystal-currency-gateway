@@ -84,11 +84,15 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
       }
       setStep('matching');
     } else if (step === 'matching') {
-      // Simulate merchant matching - reduced to 1 second
+      // Simulate instant merchant matching - like Uber
       setTimeout(() => {
         setMatchedMerchant(mockMerchant);
         setStep('payment');
-      }, 1000);
+        toast({
+          title: "Merchant matched!",
+          description: `Connected with ${mockMerchant.name} (${mockMerchant.rating}⭐)`,
+        });
+      }, 100); // Changed from 1000ms to 100ms for nearly instant matching
     } else if (step === 'payment') {
       setStep('confirmation');
       toast({
@@ -207,7 +211,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
           {step === 'matching' && (
             <div className="text-center space-y-4">
               <div className="animate-spin w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full mx-auto" />
-              <p className="text-gray-300">Finding the best merchant for your trade...</p>
+              <p className="text-gray-300">Finding merchant...</p>
               <p className="text-sm text-gray-500">{amount} USDT ↔ {localAmount.toLocaleString()} {baseCurrency}</p>
             </div>
           )}
