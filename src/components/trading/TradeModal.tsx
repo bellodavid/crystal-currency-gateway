@@ -85,7 +85,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
         return;
       }
 
-      if (tradeType === 'buy') {
+      if (tradeType === 'sell') {
         setStep('details');
       } else {
         setStep('matching');
@@ -176,7 +176,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
               <div className={`w-2 h-2 rounded-full ${step === 'amount' ? 'bg-orange-400' : 'bg-gray-600'}`} />
               <span>Amount</span>
             </div>
-            {tradeType === 'buy' && (
+            {tradeType === 'sell' && (
               <div className={`flex items-center space-x-1 ${step === 'details' ? 'text-orange-400' : 'text-gray-400'}`}>
                 <div className={`w-2 h-2 rounded-full ${step === 'details' ? 'bg-orange-400' : 'bg-gray-600'}`} />
                 <span>Details</span>
@@ -227,9 +227,10 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
             </div>
           )}
 
-          {step === 'details' && tradeType === 'buy' && (
+          {step === 'details' && tradeType === 'sell' && (
             <div className="space-y-4">
-              <h3 className="text-sm font-medium text-gray-300">Bank Account Details</h3>
+              <h3 className="text-sm font-medium text-gray-300">Your Bank Account Details</h3>
+              <p className="text-xs text-gray-400">Merchant will send {localAmount.toLocaleString()} {baseCurrency} to your account</p>
               <div className="space-y-3">
                 <Input
                   placeholder="Bank Name"
@@ -299,16 +300,16 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
                 <Card className="p-4 bg-green-500/10 border-green-500/20">
                   <h4 className="font-medium text-green-400 mb-2 flex items-center">
                     <DollarSign className="w-4 h-4 mr-1" />
-                    Merchant Payment Details
+                    Payment Details Confirmed
                   </h4>
                   <div className="space-y-2 text-sm">
-                    <p><span className="text-gray-400">Merchant will send:</span> {localAmount.toLocaleString()} {baseCurrency}</p>
-                    <p><span className="text-gray-400">From bank:</span> {matchedMerchant.bankDetails.bankName}</p>
-                    <p><span className="text-gray-400">Account:</span> {matchedMerchant.bankDetails.accountNumber}</p>
-                    <p><span className="text-gray-400">Name:</span> {matchedMerchant.bankDetails.accountName}</p>
+                    <p><span className="text-gray-400">Your bank:</span> {bankDetails.bankName}</p>
+                    <p><span className="text-gray-400">Your account:</span> {bankDetails.accountNumber}</p>
+                    <p><span className="text-gray-400">Your name:</span> {bankDetails.accountName}</p>
+                    <p><span className="text-gray-400">You'll receive:</span> {localAmount.toLocaleString()} {baseCurrency}</p>
                   </div>
                   <p className="text-xs text-green-300 mt-2">
-                    You will receive {localAmount.toLocaleString()} {baseCurrency} from the merchant
+                    Merchant will send {localAmount.toLocaleString()} {baseCurrency} to your account
                   </p>
                 </Card>
               )}

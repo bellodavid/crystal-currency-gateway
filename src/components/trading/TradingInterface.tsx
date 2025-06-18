@@ -7,7 +7,7 @@ import { useWallet } from '@/hooks/useWallet';
 import { useToast } from '@/hooks/use-toast';
 import TradeModal from './TradeModal';
 import { Pool } from '@/types/liquidity';
-import { ArrowUpDown, TrendingUp, TrendingDown, Wallet, DollarSign } from 'lucide-react';
+import { ArrowUpDown, TrendingUp, TrendingDown, Wallet, ShoppingCart, Banknote } from 'lucide-react';
 
 interface TradingInterfaceProps {
   pool: Pool;
@@ -115,24 +115,34 @@ const TradingInterface = ({ pool, onTrade, onTransactionComplete }: TradingInter
         <Button
           onClick={() => handleTradeClick('buy')}
           disabled={!isConnected}
-          className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 sm:py-4"
+          className="group relative overflow-hidden bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] py-6"
         >
-          <div className="flex flex-col items-center space-y-1">
-            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm sm:text-base font-medium">Buy USDT</span>
-            <span className="text-xs opacity-80">Pay {pool.baseCurrency}</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-green-400/20 to-green-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex flex-col items-center space-y-2">
+            <div className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors duration-300">
+              <ShoppingCart className="w-5 h-5" />
+            </div>
+            <div className="text-center">
+              <span className="block text-sm font-semibold">Buy USDT</span>
+              <span className="text-xs opacity-90">Pay {pool.baseCurrency}</span>
+            </div>
           </div>
         </Button>
         
         <Button
           onClick={() => handleTradeClick('sell')}
           disabled={!isConnected}
-          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 sm:py-4"
+          className="group relative overflow-hidden bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] py-6"
         >
-          <div className="flex flex-col items-center space-y-1">
-            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm sm:text-base font-medium">Sell USDT</span>
-            <span className="text-xs opacity-80">Get {pool.baseCurrency}</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-red-400/20 to-red-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          <div className="relative flex flex-col items-center space-y-2">
+            <div className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors duration-300">
+              <Banknote className="w-5 h-5" />
+            </div>
+            <div className="text-center">
+              <span className="block text-sm font-semibold">Sell USDT</span>
+              <span className="text-xs opacity-90">Get {pool.baseCurrency}</span>
+            </div>
           </div>
         </Button>
       </div>
