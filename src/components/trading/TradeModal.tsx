@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,22 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
 
   const localAmount = parseFloat(amount || '0') * exchangeRate;
 
+  // Auto-proceed through matching step
+  useEffect(() => {
+    if (step === 'matching') {
+      const timer = setTimeout(() => {
+        setMatchedMerchant(mockMerchant);
+        setStep('payment');
+        toast({
+          title: "Merchant matched!",
+          description: `Connected with ${mockMerchant.name} (${mockMerchant.rating}⭐)`,
+        });
+      }, 500); // 500ms for quick simulation
+
+      return () => clearTimeout(timer);
+    }
+  }, [step, toast]);
+
   const handleSubmit = async () => {
     if (step === 'amount') {
       if (!amount || parseFloat(amount) <= 0) {
@@ -83,16 +99,6 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
         return;
       }
       setStep('matching');
-    } else if (step === 'matching') {
-      // Simulate instant merchant matching - like Uber
-      setTimeout(() => {
-        setMatchedMerchant(mockMerchant);
-        setStep('payment');
-        toast({
-          title: "Merchant matched!",
-          description: `Connected with ${mockMerchant.name} (${mockMerchant.rating}⭐)`,
-        });
-      }, 100); // Changed from 1000ms to 100ms for nearly instant matching
     } else if (step === 'payment') {
       setStep('confirmation');
       toast({
@@ -211,7 +217,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
           {step === 'matching' && (
             <div className="text-center space-y-4">
               <div className="animate-spin w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full mx-auto" />
-              <p className="text-gray-300">Finding merchant...</p>
+              <p className="text-gray-300">Matching merchant...</p>
               <p className="text-sm text-gray-500">{amount} USDT ↔ {localAmount.toLocaleString()} {baseCurrency}</p>
             </div>
           )}
@@ -296,7 +302,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
           )}
 
           {/* Action Buttons */}
-          {step !== 'confirmation' && (
+          {step !== 'confirmation' && step !== 'matching' && (
             <div className="flex space-x-3">
               <Button 
                 variant="outline" 
@@ -307,12 +313,10 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
               </Button>
               <Button 
                 onClick={handleSubmit}
-                disabled={step === 'matching'}
                 className="flex-1 bg-orange-500 hover:bg-orange-600 text-white"
               >
                 {step === 'amount' && 'Continue'}
                 {step === 'details' && 'Find Merchant'}
-                {step === 'matching' && 'Matching...'}
                 {step === 'payment' && (tradeType === 'buy' ? 'Payment Sent' : 'Confirm Details')}
               </Button>
             </div>
