@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,8 +18,12 @@ interface Transaction {
   timestamp: string;
 }
 
-const TransactionHistory = () => {
-  const [transactions] = useState<Transaction[]>([
+interface TransactionHistoryProps {
+  newTransaction?: Transaction;
+}
+
+const TransactionHistory = ({ newTransaction }: TransactionHistoryProps) => {
+  const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: '1',
       type: 'buy',
@@ -54,6 +58,13 @@ const TransactionHistory = () => {
       timestamp: '2024-01-14 09:15:33'
     }
   ]);
+
+  // Add new transaction when received
+  useEffect(() => {
+    if (newTransaction) {
+      setTransactions(prev => [newTransaction, ...prev]);
+    }
+  }, [newTransaction]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {

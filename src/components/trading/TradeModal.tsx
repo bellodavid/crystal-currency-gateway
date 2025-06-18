@@ -15,6 +15,7 @@ interface TradeModalProps {
   baseCurrency: string;
   exchangeRate: number;
   userBalance: number;
+  onTradeComplete?: (transaction: any) => void;
 }
 
 interface BankAccount {
@@ -23,7 +24,7 @@ interface BankAccount {
   accountName: string;
 }
 
-const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, userBalance }: TradeModalProps) => {
+const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, userBalance, onTradeComplete }: TradeModalProps) => {
   const [amount, setAmount] = useState('');
   const [bankDetails, setBankDetails] = useState<BankAccount>({
     bankName: '',
@@ -58,7 +59,7 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
           title: "Merchant matched!",
           description: `Connected with ${mockMerchant.name} (${mockMerchant.rating}⭐)`,
         });
-      }, 500); // 500ms for quick simulation
+      }, 500);
 
       return () => clearTimeout(timer);
     }
@@ -101,11 +102,49 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
       setStep('matching');
     } else if (step === 'payment') {
       setStep('confirmation');
+      
+      // Create transaction and add to history
+      const transaction = {
+        id: Date.now().toString(),
+        type: tradeType,
+        amount: parseFloat(amount),
+        currency: baseCurrency,
+        localAmount: localAmount,
+        rate: exchangeRate,
+        status: 'pending' as const,
+        merchantAddress: '0x742d35Cc6634C0532925a3b8D3Ac92f',
+        timestamp: new Date().toISOString()
+      };
+
+      onTradeComplete?.(transaction);
+      
       toast({
-        title: "Payment confirmation pending",
-        description: "Please wait for merchant confirmation",
+        title: "Transaction created",
+        description: "Your transaction has been added to history",
       });
     }
+  };
+
+  const completeTransaction = () => {
+    const transaction = {
+      id: Date.now().toString(),
+      type: tradeType,
+      amount: parseFloat(amount),
+      currency: baseCurrency,
+      localAmount: localAmount,
+      rate: exchangeRate,
+      status: 'completed' as const,
+      merchantAddress: '0x742d35Cc6634C0532925a3b8D3Ac92f',
+      timestamp: new Date().toISOString()
+    };
+
+    onTradeComplete?.(transaction);
+    
+    toast({
+      title: "Transaction completed!",
+      description: `Successfully ${tradeType === 'buy' ? 'bought' : 'sold'} ${amount} USDT`,
+    });
+    handleClose();
   };
 
   const resetModal = () => {
@@ -259,11 +298,17 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
               ) : (
                 <Card className="p-4 bg-green-500/10 border-green-500/20">
                   <h4 className="font-medium text-green-400 mb-2 flex items-center">
-                    <CheckCircle className="w-4 h-4 mr-1" />
-                    Awaiting Your Bank Details
+                    <DollarSign className="w-4 h-4 mr-1" />
+                    Merchant Payment Details
                   </h4>
-                  <p className="text-sm text-gray-300">
-                    Please provide your bank details to receive {localAmount.toLocaleString()} {baseCurrency}
+                  <div className="space-y-2 text-sm">
+                    <p><span className="text-gray-400">Merchant will send:</span> {localAmount.toLocaleString()} {baseCurrency}</p>
+                    <p><span className="text-gray-400">From bank:</span> {matchedMerchant.bankDetails.bankName}</p>
+                    <p><span className="text-gray-400">Account:</span> {matchedMerchant.bankDetails.accountNumber}</p>
+                    <p><span className="text-gray-400">Name:</span> {matchedMerchant.bankDetails.accountName}</p>
+                  </div>
+                  <p className="text-xs text-green-300 mt-2">
+                    You will receive {localAmount.toLocaleString()} {baseCurrency} from the merchant
                   </p>
                 </Card>
               )}
@@ -286,16 +331,18 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
               </div>
               {tradeType === 'sell' && (
                 <Button 
-                  onClick={() => {
-                    toast({
-                      title: "Transaction completed!",
-                      description: "USDT has been transferred to merchant",
-                    });
-                    handleClose();
-                  }}
+                  onClick={completeTransaction}
                   className="w-full bg-green-600 hover:bg-green-700"
                 >
                   Confirm Receipt
+                </Button>
+              )}
+              {tradeType === 'buy' && (
+                <Button 
+                  onClick={completeTransaction}
+                  className="w-full bg-green-600 hover:bg-green-700"
+                >
+                  Simulate Merchant Confirmation
                 </Button>
               )}
             </div>

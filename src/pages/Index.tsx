@@ -14,6 +14,7 @@ import { Activity, DollarSign, Users, Zap } from 'lucide-react';
 const Index = () => {
   const [pools, setPools] = useState<Pool[]>(mockPools);
   const [selectedPool, setSelectedPool] = useState<Pool>(mockPools[0]);
+  const [newTransaction, setNewTransaction] = useState<any>(null);
 
   // Update selected pool when pools change
   useEffect(() => {
@@ -32,7 +33,6 @@ const Index = () => {
           previousRate: pool.exchangeRate,
           exchangeRate: getUpdatedExchangeRate(pool.exchangeRate, 0.02),
           volume24h: pool.volume24h + Math.random() * 10000,
-          fees24h: pool.fees24h + Math.random() * 100,
         }))
       );
     }, 5000);
@@ -54,6 +54,12 @@ const Index = () => {
         duration: 5000,
       });
     }, 3000);
+  };
+
+  const handleTransactionComplete = (transaction: any) => {
+    setNewTransaction(transaction);
+    // Clear the new transaction after it's been processed
+    setTimeout(() => setNewTransaction(null), 1000);
   };
 
   const globalStats = [
@@ -183,9 +189,10 @@ const Index = () => {
             <TradingInterface 
               pool={selectedPool}
               onTrade={handleTrade}
+              onTransactionComplete={handleTransactionComplete}
             />
             
-            <TransactionHistory />
+            <TransactionHistory newTransaction={newTransaction} />
           </div>
         </div>
       </div>
