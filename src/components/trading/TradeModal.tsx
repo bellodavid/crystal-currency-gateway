@@ -84,11 +84,11 @@ const TradeModal = ({ isOpen, onClose, tradeType, baseCurrency, exchangeRate, us
       }
       setStep('matching');
     } else if (step === 'matching') {
-      // Simulate merchant matching
+      // Simulate merchant matching - reduced to 1 second
       setTimeout(() => {
         setMatchedMerchant(mockMerchant);
         setStep('payment');
-      }, 2000);
+      }, 1000);
     } else if (step === 'payment') {
       setStep('confirmation');
       toast({
